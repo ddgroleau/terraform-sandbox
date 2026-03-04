@@ -45,3 +45,6 @@ terraform.rc
 
 azure.sh
 aws.sh
+copilot-instructions.md
+tls.*
+cert.pfx
