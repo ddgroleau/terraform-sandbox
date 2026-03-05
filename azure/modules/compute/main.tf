@@ -5,28 +5,26 @@ resource "azurerm_kubernetes_cluster" "aks" {
   resource_group_name = var.resource_group_name
   dns_prefix          = "${var.environment}-aks"
 
-  # Deploy into private subnets for security
+  # Deploy into private subnets
   network_profile {
-    network_plugin    = "azure"
-    network_policy    = "azure"
-    service_cidr      = "10.1.0.0/16"
-    dns_service_ip    = "10.1.0.10"
-    pod_cidr          = "172.17.0.1/16"
-    load_balancer_sku = "standard"
+    network_plugin      = "azure"
+    network_policy      = "azure"
+    service_cidr        = "10.1.0.0/16"
+    dns_service_ip      = "10.1.0.10"
+    pod_cidr            = "172.17.0.0/16"
+    network_plugin_mode = "overlay"
+    load_balancer_sku   = "standard"
   }
 
-  # Node pool w/ multi AZ private subnets and auto-scaling
   default_node_pool {
     name                 = "default"
-    vm_size              = "Standard_D2_v2"
+    vm_size              = "standard_b2s_v2"
     auto_scaling_enabled = true
-    min_count            = 2
-    max_count            = 5
+    min_count            = 1
+    max_count            = 2
     vnet_subnet_id       = var.private_subnet_ids[0]
-    zones                = ["1", "2"]
   }
 
-  # Managed Identity
   identity {
     type = "SystemAssigned"
   }

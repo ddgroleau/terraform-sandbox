@@ -4,13 +4,28 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 4.62.1"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 3.0.0"
+    }
   }
 
   required_version = ">= 1.14.0"
 }
 
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
+}
+
+provider "kubernetes" {
+  host                   = module.compute.kube_api_endpoint
+  client_certificate     = base64decode(module.compute.kube_client_certificate)
+  client_key             = base64decode(module.compute.kube_client_key)
+  cluster_ca_certificate = base64decode(module.compute.kube_cluster_ca_certificate)
 }
 
 module "foundation" {
@@ -51,4 +66,10 @@ module "compute" {
   private_subnet_ids = module.network.private_subnet_ids
   app_gateway_id     = module.network.app_gateway_id
   vnet_id            = module.network.vnet_id
+}
+
+module "kubernetes" {
+  source = "../../modules/kubernetes"
+
+  environment = var.environment
 }
