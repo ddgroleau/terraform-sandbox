@@ -40,3 +40,15 @@ module "network" {
   private_security_group_id = module.security.private_security_group_id
   ssl_cert_password         = var.ssl_cert_password
 }
+
+module "compute" {
+  source = "../../modules/compute"
+
+  environment             = var.environment
+  resource_group_name     = module.foundation.resource_group_name
+  resource_group_location = module.foundation.resource_group_location
+
+  private_subnet_ids = module.network.private_subnet_ids
+  app_gateway_id     = module.network.app_gateway_id
+  vnet_id            = module.network.vnet_id
+}

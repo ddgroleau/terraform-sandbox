@@ -14,6 +14,10 @@ output "private_subnet_ids" {
   value = azurerm_subnet.private[*].id
 }
 
+output "app_gateway_id" {
+  value = azurerm_application_gateway.network.id
+}
+
 output "backend_address_pool_id" {
   value = tolist(azurerm_application_gateway.network.backend_address_pool)[0].id
 }

@@ -26,7 +26,8 @@ resource "azurerm_subnet" "private" {
   name                 = "${var.environment}-private-az${count.index + 1}"
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.${count.index + 2}.0/24"] # 10.0.2.0/24, 10.0.3.0/24
+  address_prefixes     = ["10.0.${count.index + 2}.0/24"]
+
 }
 
 # Associate NSGs to Private Subnets
@@ -43,6 +44,11 @@ resource "azurerm_public_ip" "nat" {
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
   sku                 = "Standard"
+
+  tags = {
+    Environment = var.environment
+    ManagedBy   = "terraform"
+  }
 }
 
 # NAT Gateway
@@ -51,6 +57,11 @@ resource "azurerm_nat_gateway" "nat" {
   location            = var.resource_group_location
   resource_group_name = var.resource_group_name
   sku_name            = "Standard"
+
+  tags = {
+    Environment = var.environment
+    ManagedBy   = "terraform"
+  }
 }
 
 # Associate Public IP to NAT Gateway
@@ -73,6 +84,11 @@ resource "azurerm_public_ip" "app_gateway" {
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
   sku                 = "Standard"
+
+  tags = {
+    Environment = var.environment
+    ManagedBy   = "terraform"
+  }
 }
 
 # Set local variables for App Gateway configuration
@@ -118,10 +134,10 @@ resource "azurerm_application_gateway" "network" {
     port = 443
   }
 
-  # SSL Certificate (using self-signed for demo - use Key Vault for production)
+  # SSL Certificate (self-signed for this sandbox)
   ssl_certificate {
     name     = "${var.environment}-ssl-cert"
-    data     = filebase64("${path.module}/cert.pfx") # Or use Key Vault secret_id
+    data     = filebase64("${path.module}/cert.pfx")
     password = var.ssl_cert_password
   }
 
@@ -185,5 +201,10 @@ resource "azurerm_application_gateway" "network" {
     port                  = 80
     protocol              = "Http"
     request_timeout       = 60
+  }
+
+  tags = {
+    Environment = var.environment
+    ManagedBy   = "terraform"
   }
 }
