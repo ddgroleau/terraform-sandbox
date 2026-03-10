@@ -74,3 +74,25 @@ module "kubernetes" {
 
   environment = var.environment
 }
+
+module "data" {
+  source = "../../modules/data"
+
+  environment             = var.environment
+  resource_group_name     = module.foundation.resource_group_name
+  resource_group_location = module.foundation.resource_group_location
+
+  sql_admin_username = var.sql_admin_username
+  sql_admin_password = var.sql_admin_password
+
+  private_subnet_ids = module.network.private_subnet_ids
+  vnet_id            = module.network.vnet_id
+}
+
+module "messaging" {
+  source = "../../modules/messaging"
+
+  environment             = var.environment
+  resource_group_name     = module.foundation.resource_group_name
+  resource_group_location = module.foundation.resource_group_location
+}

@@ -41,6 +41,13 @@ resource "azurerm_kubernetes_cluster" "aks" {
     Environment = var.environment
     ManagedBy   = "terraform"
   }
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes prevent unnecessary updates
+      default_node_pool[0].upgrade_settings,
+    ]
+  }
 }
 
 # AKS cluster identity needs Contributor on App Gateway
@@ -56,5 +63,4 @@ resource "azurerm_role_assignment" "aks_network_contributor_vnet" {
   role_definition_name = "Network Contributor"
   principal_id         = azurerm_kubernetes_cluster.aks.ingress_application_gateway[0].ingress_application_gateway_identity[0].object_id
 }
-
 

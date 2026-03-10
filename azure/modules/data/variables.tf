@@ -13,14 +13,22 @@ variable "resource_group_location" {
   type        = string
 }
 
+variable "sql_admin_username" {
+  description = "The MSSQL admin username"
+  type        = string
+  sensitive   = true
+}
+
+variable "sql_admin_password" {
+  description = "The MSSQL admin password"
+  type        = string
+  sensitive   = true
+}
+
+
 variable "private_subnet_ids" {
   description = "List of private subnet IDs"
   type        = list(string)
-}
-
-variable "app_gateway_id" {
-  description = "Application Gateway resource ID for AGIC integration"
-  type        = string
 }
 
 variable "vnet_id" {
