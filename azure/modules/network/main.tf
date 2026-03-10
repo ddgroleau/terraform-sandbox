@@ -4,7 +4,8 @@ resource "azurerm_virtual_network" "vnet" {
   location            = var.resource_group_location
   resource_group_name = var.resource_group_name
   address_space       = ["10.0.0.0/16"]
-  dns_servers         = ["10.0.0.4", "10.0.0.5"]
+  # Use Azure-provided DNS
+  dns_servers = ["168.63.129.16"]
 
   tags = {
     Environment = var.environment

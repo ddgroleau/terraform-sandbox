@@ -24,7 +24,8 @@ resource "kubernetes_deployment_v1" "http-server" {
           name  = "http-echo"
           image = "hashicorp/http-echo:1.0.0"
           args = [
-            "-text=Hello from Azure Kubernetes Service!"
+            "-text=Hello from Azure Kubernetes Service!",
+            "-listen=:8080"
           ]
           port {
             container_port = 8080

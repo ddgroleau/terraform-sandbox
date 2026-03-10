@@ -23,6 +23,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
     min_count            = 1
     max_count            = 2
     vnet_subnet_id       = var.private_subnet_ids[0]
+    tags = {
+      Environment = var.environment
+      ManagedBy   = "terraform"
+    }
   }
 
   identity {
@@ -39,15 +43,15 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 }
 
-# AKS cluster identity needs contributor access on App Gateway
-resource "azurerm_role_assignment" "aks_agic_appgw" {
+# AKS cluster identity needs Contributor on App Gateway
+resource "azurerm_role_assignment" "aks_contributor_app_gateway" {
   scope                = var.app_gateway_id
   role_definition_name = "Contributor"
   principal_id         = azurerm_kubernetes_cluster.aks.identity[0].principal_id
 }
 
 # AKS cluster identity needs Network Contributor on VNet
-resource "azurerm_role_assignment" "aks_network_contributor" {
+resource "azurerm_role_assignment" "aks_network_contributor_vnet" {
   scope                = var.vnet_id
   role_definition_name = "Network Contributor"
   principal_id         = azurerm_kubernetes_cluster.aks.identity[0].principal_id
