@@ -47,14 +47,14 @@ resource "azurerm_kubernetes_cluster" "aks" {
 resource "azurerm_role_assignment" "aks_contributor_app_gateway" {
   scope                = var.app_gateway_id
   role_definition_name = "Contributor"
-  principal_id         = azurerm_kubernetes_cluster.aks.identity[0].principal_id
+  principal_id         = azurerm_kubernetes_cluster.aks.ingress_application_gateway[0].ingress_application_gateway_identity[0].object_id
 }
 
 # AKS cluster identity needs Network Contributor on VNet
 resource "azurerm_role_assignment" "aks_network_contributor_vnet" {
   scope                = var.vnet_id
   role_definition_name = "Network Contributor"
-  principal_id         = azurerm_kubernetes_cluster.aks.identity[0].principal_id
+  principal_id         = azurerm_kubernetes_cluster.aks.ingress_application_gateway[0].ingress_application_gateway_identity[0].object_id
 }
 
 

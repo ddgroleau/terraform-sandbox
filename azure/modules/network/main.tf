@@ -198,7 +198,6 @@ resource "azurerm_application_gateway" "network" {
   backend_http_settings {
     name                  = local.http_setting_name
     cookie_based_affinity = "Disabled"
-    path                  = "/path1/"
     port                  = 80
     protocol              = "Http"
     request_timeout       = 60
@@ -207,5 +206,20 @@ resource "azurerm_application_gateway" "network" {
   tags = {
     Environment = var.environment
     ManagedBy   = "terraform"
+  }
+
+  # Ignore changes since the App Gateway K8s Ingress Controller will modify these
+  lifecycle {
+    ignore_changes = [
+      backend_address_pool,
+      backend_http_settings,
+      http_listener,
+      request_routing_rule,
+      redirect_configuration,
+      probe,
+      url_path_map,
+      ssl_certificate,
+      tags,
+    ]
   }
 }

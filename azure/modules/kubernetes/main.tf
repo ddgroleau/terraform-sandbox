@@ -55,12 +55,11 @@ resource "kubernetes_service_v1" "http-server" {
 resource "kubernetes_ingress_v1" "http-server" {
   metadata {
     name = local.deployment_name
-    annotations = {
-      "kubernetes.io/ingress.class" : "azure/application-gateway"
-    }
   }
 
   spec {
+    ingress_class_name = "azure-application-gateway"
+
     rule {
       http {
         path {

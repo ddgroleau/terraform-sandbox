@@ -10,10 +10,25 @@ resource "azurerm_network_security_group" "sg_private" {
   }
 }
 
+# K8s GatewayManager must be able to reach App Gateway backends on ports 65200-65535 for health probes.
+resource "azurerm_network_security_rule" "private_allow_gateway_manager" {
+  name                        = "Allow-GatewayManager"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "65200-65535"
+  source_address_prefix       = "GatewayManager"
+  destination_address_prefix  = "*"
+  resource_group_name         = var.resource_group_name
+  network_security_group_name = azurerm_network_security_group.sg_private.name
+}
+
 # Private NSG Rules
 resource "azurerm_network_security_rule" "private_allow_from_public" {
   name                        = "Allow-From-Public-Subnet"
-  priority                    = 100
+  priority                    = 110
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
@@ -27,7 +42,7 @@ resource "azurerm_network_security_rule" "private_allow_from_public" {
 
 resource "azurerm_network_security_rule" "private_allow_pod_to_pod" {
   name                        = "Allow-Pod-to-Pod"
-  priority                    = 110
+  priority                    = 120
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "*"
@@ -41,7 +56,7 @@ resource "azurerm_network_security_rule" "private_allow_pod_to_pod" {
 
 resource "azurerm_network_security_rule" "private_deny_all" {
   name                        = "Deny-All-Inbound"
-  priority                    = 4096
+  priority                    = 130
   direction                   = "Inbound"
   access                      = "Deny"
   protocol                    = "*"
