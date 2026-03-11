@@ -5,20 +5,24 @@ This module contains a sandbox environment for creating Azure resources with [Te
 ## Modules
 
 - [Foundation](./modules/foundation/main.tf): Provisions the Resource Group for resources in the environment
-- [Security](./modules/foundation/main.tf): Provisions security resources, such as network security rules.
-- [Network](./modules/foundation/main.tf): Provisions network resources, such as virtual networks, subnets, NAT gateways, and application gateways
-- [Compute](./modules/foundation/main.tf): In Progress
-- [Storage](./modules/foundation/main.tf): In Progress
-- [Messaging](./modules/foundation/main.tf): In Progress
+- [Security](./modules/security/main.tf): Provisions security resources, such as network security rules.
+- [Network](./modules/network/main.tf): Provisions network resources, such as virtual networks, subnets, NAT gateways, and application gateways
+- [Compute](./modules/compute/main.tf): Provisions AKS cluster and integrates cluster network resources with Virtual Network
+- [Kubernetes](./modules/kubernetes/main.tf): Provisions Kubernetes Deployment, Service and Ingress resources to enable a small web-server pod in the cluster for testing
+- [Data](./modules/data/main.tf): Provisions an Azure MSSQL Server instance and database, and integrates SQL resources with Virtual Network
+- [Messaging](./modules/messaging/main.tf): Provisions Azure Service Bus Namespace, Topic, Subscription and authorization rules.
 
 ## Environments
 
 There are 4 unique environments, each with their own separate Terraform state:
 
 - [DEV](./environments/dev/main.tf)
-- [QA](./environments/dev/main.tf)
-- [UAT](./environments/dev/main.tf)
-- [PROD](./environments/dev/main.tf)
+
+The below environments are added to demonstrate multi-environment setup, and are not fully-implemented:
+
+- [QA](./environments/qa/main.tf)
+- [UAT](./environments/uat/main.tf)
+- [PROD](./environments/prod/main.tf)
 
 ## Testing the Sandbox
 
